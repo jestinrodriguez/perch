@@ -1,86 +1,60 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import BasicTable from "./Table";
 import TestForm from "./TestForm";
-import Former from "./Former";
-import MyForm from "./MyForm";
-import TestForm1 from "./TestForm1";
-import NewTable from "./NewTable";
+import CompensationStructureTable from "./CompensationStructureTable";
 import { data } from "../data/structure";
-import TestEdit from "./TestEdit";
+import Header from "./Header";
+import CreateModal from "./Modal/CreateModal";
 
 const Home = () => {
-  // const [showModal, setShowModal] = useState(false);
-
-  // const openModal = () => {};
-
-  const [formData, setFormData] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
-
   const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [dataFromForm, setDataFromForm] = useState(null);
 
-  const [dataFromForm, setDataFromForm] = useState(data);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleCreate = () => {
-    setIsCreating(true);
-  };
-  const handleEdit = () => {
-    setIsEditing(true);
+  // const handleCreate = () => {
+  //   setIsCreating(true);
+  // };
+
+  const useModal = () => {
+    setShowModal(true);
   };
 
   return (
-    <div
-      style={{
-        padding: "25px",
-        margin: "25px",
-        width: "100vw",
-        height: "100vh",
-      }}
-    >
-      <Button onClick={handleCreate}>Create</Button>
-      <Button onClick={handleEdit}>Edit</Button>
+    <div>
+      <Header>
+        <Button
+          style={{ backgroundColor: "#3987f7" }}
+          variant='contained'
+          color='success'
+          onClick={useModal}
+        >
+          Create
+        </Button>
+      </Header>
+      <CreateModal setShowModal={setShowModal} showModal={showModal} />
 
-      {/* <MyForm /> */}
-      {/* <TestForm
-        dataFromForm={dataFromForm}
-        setDataFromForm={setDataFromForm}
-        setDataLoaded={setDataLoaded}
-      /> */}
-      {/* <Former /> */}
-      {/* <div style={{ width: "600px", height: "300px" }}>
-        {!isCreating ? (
-          ""
-        ) : (
-          <TestForm setDataLoaded={setDataLoaded} setFormData={setFormData} />
-        )}
-      </div> */}
-
-      {/* {!isEditing ? (
+      {!isCreating ? (
         ""
       ) : (
         <TestForm
+          dataFromForm={dataFromForm}
+          setDataFromForm={setDataFromForm}
           setDataLoaded={setDataLoaded}
-          setFormData={setFormData}
-          formData={formData}
+          setIsCreating={setIsCreating}
+          setShowModal={setShowModal}
         />
-      )} */}
+      )}
 
-      {/* <TestForm1
-        setDataLoaded={setDataLoaded}
-        setFormData={setFormData}
-        formData={formData}
-      /> */}
-
-      {/* {!dataLoaded ? (
+      {!dataLoaded ? (
         "Please load some data...."
       ) : (
-        <NewTable dataFromForm={dataFromForm} />
-      )} */}
-
-      <NewTable dataFromForm={dataFromForm} setDataFromForm={setDataFromForm} />
-
-      <TestEdit />
+        <CompensationStructureTable
+          dataFromForm={dataFromForm}
+          setDataFromForm={setDataFromForm}
+        />
+      )}
     </div>
   );
 };

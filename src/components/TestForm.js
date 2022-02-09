@@ -2,47 +2,90 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 
+import styled from "styled-components";
+import Button from "@material-ui/core/Button";
+
+import TextField from "@mui/material/TextField";
+
 const initialValues = {
   levels: [],
 };
 
-const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
+const CssTextField = styled(TextField)({
+  "& label.Mui-focused": {
+    color: "#448ffb",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "#448ffb",
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "#448ffb",
+    },
+    "&:hover fieldset": {
+      borderColor: "white",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#448ffb",
+    },
+  },
+});
+
+const TestForm = ({
+  dataFromForm,
+  setDataFromForm,
+  setDataLoaded,
+  setIsCreating,
+  setShowModal,
+}) => {
   return (
     <div>
-      <h1>Tiers</h1>
+      <h1 style={{ color: "white", fontFamily: "Arial" }}>
+        CREATE A COMPENSATION STRUCTURE
+      </h1>
       <Formik
+        style={{ overflow: "scroll" }}
         initialValues={initialValues}
         onSubmit={async (values) => {
-          await new Promise((r) => setTimeout(r, 500));
+          await new Promise((r) => setTimeout(r, 100));
           // alert(JSON.stringify(values, null, 2));
           // console.log(JSON.stringify(values, null, 2));
+
+          setIsCreating(true);
+          setShowModal(false);
           setDataFromForm(values);
           setDataLoaded(true);
         }}
       >
         {({ values }) => (
-          <Form>
-            <div style={{ display: "flex" }}>
+          <Form style={{ overflow: "auto" }}>
+            <div style={{ display: "flex", overflow: "scroll" }}>
               <div style={{ float: "left" }}>
-                <FieldArray name='levels'>
+                <FieldArray name='levels' style={{ overflow: "scroll" }}>
                   {({ insert, remove, push }) => (
-                    <div>
+                    <div style={{ overflow: "auto" }}>
                       {values.levels.length > 0 &&
                         values.levels.map((lvl, index) => (
                           <>
-                            <div>{`LEVEL ${index + 1}`}</div>
+                            <div
+                              style={{
+                                color: "#448ffb",
+                                fontFamily: "Arial",
+                              }}
+                            >{`LEVEL ${index + 1}`}</div>
                             <br />
                             <div className='row' key={index}>
                               <div className='col'>
-                                <button
+                                <Button
                                   type='button'
+                                  variant='contained'
                                   className='secondary'
                                   onClick={() => {
                                     remove(index);
                                   }}
                                 >
                                   REMOVE LEVELS
-                                </button>
+                                </Button>
                               </div>
                             </div>
 
@@ -53,16 +96,20 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                                     values.levels[index].tiers.map(
                                       (tier, idx) => (
                                         <>
-                                          <div>{`TIER ${idx + 1}`}</div>
+                                          <div
+                                            style={{
+                                              color: "#448ffb",
+                                              fontFamily: "Arial",
+                                            }}
+                                          >{`TIER ${idx + 1}`}</div>
                                           <br />
                                           <div className='row' key={idx}>
                                             <div className='col'>
                                               <label
                                                 htmlFor={`levels[${index}].tiers[${idx}].from`}
-                                              >
-                                                From:
-                                              </label>
-                                              <Field
+                                              ></label>
+                                              <CssTextField
+                                                label='From'
                                                 name={`levels[${index}].tiers[${idx}].from`}
                                                 placeholder='0$'
                                                 type='text'
@@ -71,17 +118,17 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                                             <div className='col'>
                                               <label
                                                 htmlFor={`levels[${index}].tiers[${idx}].rate`}
-                                              >
-                                                Rate:
-                                              </label>
-                                              <Field
+                                              ></label>
+                                              <CssTextField
+                                                label='Rate'
                                                 name={`levels[${index}].tiers[${idx}].rate`}
                                                 placeholder='15%'
                                                 type='text'
                                               />
                                             </div>
                                             <div className='col'>
-                                              <button
+                                              <Button
+                                                variant='contained'
                                                 type='button'
                                                 className='secondary'
                                                 onClick={() => {
@@ -90,40 +137,44 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                                                 }}
                                               >
                                                 REMOVE TIERS
-                                              </button>
+                                              </Button>
                                             </div>
                                           </div>
                                         </>
                                       )
                                     )}
 
-                                  <button
+                                  <Button
+                                    variant='contained'
                                     type='button'
                                     className='secondary'
                                     onClick={() => push({ from: "", rate: "" })}
                                   >
                                     Add Tier
-                                  </button>
+                                  </Button>
                                 </div>
                               )}
                             </FieldArray>
                           </>
                         ))}
 
-                      <button
+                      <Button
                         type='button'
+                        variant='contained'
                         className='secondary'
                         onClick={() => push({ tiers: [] })}
                       >
                         Add Levels
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </FieldArray>
               </div>
-              <button type='submit'>Submit</button>
+              <Button color='primary' variant='contained' type='submit'>
+                Submit
+              </Button>
               <div>
-                <pre style={{ fontSize: "100%" }}>
+                <pre style={{ fontSize: "100%", color: "white" }}>
                   {JSON.stringify(values, null, 2)}
                 </pre>
               </div>
