@@ -2,37 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 
-// const initialValues = {
-//   levels: [
-//     {
-//       tiers: [
-//         {
-//           from: "",
-//           rate: "",
-//         },
-//       ],
-//     },
-//   ],
-// };
-
 const initialValues = {
-  // levels: [
-  //   {
-  //     tiers: [
-  //       {
-  //         from: "0",
-  //         rate: "10",
-  //       },
-  //     ],
-  //   },
-  // ],
-  // // tiers: [
-  // //   {
-  // //     from: "",
-  // //     rate: "",
-  // //   },
-  // // ],
-
   levels: [],
 };
 
@@ -45,8 +15,7 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
         onSubmit={async (values) => {
           await new Promise((r) => setTimeout(r, 500));
           // alert(JSON.stringify(values, null, 2));
-          console.log(JSON.stringify(values, null, 2));
-
+          // console.log(JSON.stringify(values, null, 2));
           setDataFromForm(values);
           setDataLoaded(true);
         }}
@@ -58,11 +27,9 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                 <FieldArray name='levels'>
                   {({ insert, remove, push }) => (
                     <div>
-                      {console.log(values.levels)}
                       {values.levels.length > 0 &&
                         values.levels.map((lvl, index) => (
                           <>
-                            {/* {console.log(values.levels[index].tiers)} */}
                             <div>{`LEVEL ${index + 1}`}</div>
                             <br />
                             <div className='row' key={index}>
@@ -72,8 +39,6 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                                   className='secondary'
                                   onClick={() => {
                                     remove(index);
-                                    console.log(index);
-                                    console.log(lvl);
                                   }}
                                 >
                                   REMOVE LEVELS
@@ -82,7 +47,6 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                             </div>
 
                             <FieldArray name={`levels[${index}].tiers`}>
-                              {/* <FieldArray name='levels'> */}
                               {({ insert, remove, push }) => (
                                 <div>
                                   {values.levels[index].tiers.length > 0 &&
@@ -91,14 +55,12 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                                         <>
                                           <div>{`TIER ${idx + 1}`}</div>
                                           <br />
-
                                           <div className='row' key={idx}>
-                                            {/* {console.log(values.levels[0].tiers)} */}
                                             <div className='col'>
                                               <label
                                                 htmlFor={`levels[${index}].tiers[${idx}].from`}
                                               >
-                                                From:{" "}
+                                                From:
                                               </label>
                                               <Field
                                                 name={`levels[${index}].tiers[${idx}].from`}
@@ -110,7 +72,7 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                                               <label
                                                 htmlFor={`levels[${index}].tiers[${idx}].rate`}
                                               >
-                                                Rate:{" "}
+                                                Rate:
                                               </label>
                                               <Field
                                                 name={`levels[${index}].tiers[${idx}].rate`}
@@ -159,9 +121,7 @@ const TestForm = ({ dataFromForm, setDataFromForm, setDataLoaded }) => {
                   )}
                 </FieldArray>
               </div>
-
               <button type='submit'>Submit</button>
-
               <div>
                 <pre style={{ fontSize: "100%" }}>
                   {JSON.stringify(values, null, 2)}

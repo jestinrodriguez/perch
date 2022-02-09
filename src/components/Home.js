@@ -5,6 +5,9 @@ import TestForm from "./TestForm";
 import Former from "./Former";
 import MyForm from "./MyForm";
 import TestForm1 from "./TestForm1";
+import NewTable from "./NewTable";
+import { data } from "../data/structure";
+import TestEdit from "./TestEdit";
 
 const Home = () => {
   // const [showModal, setShowModal] = useState(false);
@@ -17,7 +20,7 @@ const Home = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [dataFromForm, setDataFromForm] = useState([]);
+  const [dataFromForm, setDataFromForm] = useState(data);
 
   const handleCreate = () => {
     setIsCreating(true);
@@ -39,11 +42,11 @@ const Home = () => {
       <Button onClick={handleEdit}>Edit</Button>
 
       {/* <MyForm /> */}
-      <TestForm
+      {/* <TestForm
         dataFromForm={dataFromForm}
         setDataFromForm={setDataFromForm}
         setDataLoaded={setDataLoaded}
-      />
+      /> */}
       {/* <Former /> */}
       {/* <div style={{ width: "600px", height: "300px" }}>
         {!isCreating ? (
@@ -69,11 +72,15 @@ const Home = () => {
         formData={formData}
       /> */}
 
-      {!dataLoaded ? (
+      {/* {!dataLoaded ? (
         "Please load some data...."
       ) : (
-        <BasicTable formData={formData} dataFromForm={dataFromForm} />
-      )}
+        <NewTable dataFromForm={dataFromForm} />
+      )} */}
+
+      <NewTable dataFromForm={dataFromForm} setDataFromForm={setDataFromForm} />
+
+      <TestEdit />
     </div>
   );
 };
