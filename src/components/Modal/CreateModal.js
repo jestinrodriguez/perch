@@ -24,7 +24,6 @@ const CreateModal = ({ showModal, setShowModal }) => {
       backgroundColor: "#222529",
       padding: 0,
       border: "none",
-      overflow: "scroll",
     },
 
     overlay: {
@@ -43,8 +42,8 @@ const CreateModal = ({ showModal, setShowModal }) => {
         style={customStyles}
         ariaHideApp={false}
       >
-        <TestForm />
-        <button onClick={() => setShowModal(false)}>Close Modal</button>
+        <TestForm setShowModal={setShowModal} />
+        {/* <button onClick={() => setShowModal(false)}>Close Modal</button> */}
       </Modal>
     </div>
   );
