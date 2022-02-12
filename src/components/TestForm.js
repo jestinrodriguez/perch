@@ -9,11 +9,14 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
 
+import * as Yup from "yup";
+const { object, string, number, date, array } = require("yup");
+
 const initialValues = {
   levels: [],
 };
 
-const CssTextField = styled(TextField)({
+const CssField = styled(Field)({
   "& label.Mui-focused": {
     color: "#448ffb",
   },
@@ -33,31 +36,50 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const TestForm = ({
-  dataFromForm,
-  setDataFromForm,
-  setDataLoaded,
-  setIsCreating,
-  setShowModal,
-}) => {
+const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
+  const handleSubmit = (values) => {
+    // await new Promise((r) => {
+    //   setTimeout(r, 100);
+    // });
+
+    setShowModal(false);
+    setDataFromForm(values);
+    setDataLoaded(true);
+  };
+
+  const validate = object().shape({
+    levels: array().of(
+      object().shape({
+        tiers: array().of(
+          object().shape({
+            from: number()
+              .required("Required")
+              .positive("Must be a positive number"),
+            rate: number()
+              .required("Required")
+              .min(1, "Please Enter a number between 1-100")
+              .max(100, "Please Enter a number between 1-100"),
+          })
+        ),
+      })
+    ),
+  });
+
+  // let schema = Yup.object().shape({
+  //   nested: Yup.object().shape({
+  //     arr: Yup.array().of(Yup.object().shape({ num: number().max(4) })),
+  //   }),
+  // });
+
   return (
-    <div className='col-md-5'>
-      <h1 style={{ color: "white", fontFamily: "Arial" }}>
+    <div className='container mt-3'>
+      <h1 style={{ color: "white", fontFamily: "Arial", padding: "20px" }}>
         CREATE A COMPENSATION STRUCTURE
       </h1>
       <Formik
         initialValues={initialValues}
-        onSubmit={async (values) => {
-          await new Promise((r) => setTimeout(r, 500));
-          // alert(JSON.stringify(values, null, 2));
-          // console.log(JSON.stringify(values, null, 2));
-
-          console.log(JSON.stringify(values, null, 2));
-          setIsCreating(true);
-          setShowModal(false);
-          setDataFromForm(values);
-          setDataLoaded(true);
-        }}
+        onSubmit={(values) => handleSubmit(values)}
+        validationSchema={validate}
       >
         {({ values }) => (
           <Form>
@@ -67,14 +89,19 @@ const TestForm = ({
                 height: "500px",
               }}
             >
-              <div>
+              <div style={{ paddingLeft: "40px" }}>
                 <FieldArray name='levels'>
                   {({ insert, remove, push }) => (
                     <div style={{ alignItems: "center" }}>
-                      <h1 style={{ color: "white", fontFamily: "Arial" }}>
-                        ADD LEVEL {""}
-                        <AddCircleIcon onClick={() => push({ tiers: [] })} />
-                      </h1>
+                      {values.levels.length === 0 ? (
+                        <h1 style={{ color: "#448ffb", fontFamily: "Arial" }}>
+                          ADD LEVEL {""}
+                          <AddCircleIcon onClick={() => push({ tiers: [] })} />
+                        </h1>
+                      ) : (
+                        ""
+                      )}
+
                       {/* <Button
                         type='button'
                         variant='contained'
@@ -91,7 +118,8 @@ const TestForm = ({
                       >
                         {values.levels.length > 0 &&
                           values.levels.map((lvl, index) => (
-                            <>
+                            <div key={index}>
+                              {console.log(lvl)}
                               <div
                                 style={{
                                   color: "#448ffb",
@@ -110,26 +138,32 @@ const TestForm = ({
                                 {values.levels.length === index + 1 ? (
                                   <>
                                     <AddCircleIcon
-                                      onClick={() => push({ tiers: [] })}
+                                      onClick={() =>
+                                        push({
+                                          tiers: [],
+                                        })
+                                      }
                                     />
                                   </>
                                 ) : (
                                   ""
                                 )}
                               </div>
-                              <br />
+
                               <div className='row' key={index}></div>
 
                               <FieldArray name={`levels[${index}].tiers`}>
                                 {({ insert, remove, push }) => (
-                                  <div>
+                                  <div style={{ paddingBottom: "5px" }}>
                                     {values.levels[index].tiers.length > 0 &&
                                       values.levels[index].tiers.map(
                                         (tier, idx) => (
-                                          <>
+                                          <div key={idx}>
                                             <div
                                               style={{
-                                                color: "#448ffb",
+                                                color: "white",
+                                                paddingTop: "5px",
+                                                paddingLeft: "20px",
                                                 fontFamily: "Arial",
                                               }}
                                             >{`TIER ${idx + 1}`}</div>
@@ -139,38 +173,48 @@ const TestForm = ({
                                               style={{
                                                 display: "flex",
                                                 alignItems: "center",
+                                                paddingLeft: "20px",
+                                                justifyContent: "space-between",
                                               }}
                                             >
                                               <div className='col'>
                                                 <label
                                                   htmlFor={`levels[${index}].tiers[${idx}].from`}
                                                 ></label>
-                                                <CssTextField
+                                                <Field
                                                   label='From'
                                                   name={`levels[${index}].tiers[${idx}].from`}
                                                   placeholder='0$'
-                                                  type='text'
+                                                  type='number'
+                                                />
+                                                <ErrorMessage
+                                                  name={`levels[${index}].tiers[${idx}].from`}
                                                 />
                                               </div>
                                               <div className='col'>
                                                 <label
                                                   htmlFor={`levels[${index}].tiers[${idx}].rate`}
                                                 ></label>
-                                                <CssTextField
+                                                <Field
                                                   label='Rate'
                                                   name={`levels[${index}].tiers[${idx}].rate`}
                                                   placeholder='15%'
-                                                  type='text'
+                                                  type='number'
+                                                />
+                                                <ErrorMessage
+                                                  color='red'
+                                                  name={`levels[${index}].tiers[${idx}].rate`}
                                                 />
                                               </div>
+
                                               <div className='col'>
                                                 <DeleteIcon
                                                   style={{
                                                     cursor: "pointer",
+                                                    color: "white",
                                                   }}
                                                   onClick={() => {
                                                     remove(idx);
-                                                    console.log(tier);
                                                   }}
                                                 />
                                                 {values.levels[index].tiers
@@ -180,6 +224,7 @@ const TestForm = ({
                                                     <AddCircleIcon
                                                       style={{
                                                         cursor: "pointer",
+                                                        color: "white",
                                                       }}
                                                       onClick={() =>
                                                         push({
@@ -194,55 +239,66 @@ const TestForm = ({
                                                 )}
                                               </div>
                                             </div>
-                                          </>
+                                          </div>
                                         )
                                       )}
-                                    {/* <Button
-                                      variant='contained'
-                                      type='button'
-                                      className='secondary'
-                                      onClick={() =>
-                                        push({ from: "", rate: "" })
-                                      }
-                                    >
-                                      Add Tier
-                                    </Button> */}
-                                    ADD TIER
-                                    <AddCircleIcon
-                                      style={{
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() =>
-                                        push({
-                                          from: "",
-                                          rate: "",
-                                        })
-                                      }
-                                    />
+
+                                    {values.levels[index].tiers.length > 0 ? (
+                                      ""
+                                    ) : (
+                                      <div
+                                        style={{
+                                          color: "white",
+                                          paddingLeft: "20px",
+                                          paddingTop: "5px",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          fontFamily: "Arial",
+                                        }}
+                                      >
+                                        ADD TIER
+                                        <AddCircleIcon
+                                          onClick={() =>
+                                            push({
+                                              from: "",
+                                              rate: "",
+                                            })
+                                          }
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                 )}
                               </FieldArray>
-                            </>
+                            </div>
                           ))}
                       </div>
                     </div>
                   )}
                 </FieldArray>
               </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                }}
+              >
+                {values.levels.length > 0 ? (
+                  <Button color='primary' variant='contained' type='submit'>
+                    Submit
+                  </Button>
+                ) : (
+                  ""
+                )}
+              </div>
 
-              {values.levels.length > 0 ? (
-                <Button color='primary' variant='contained' type='submit'>
-                  Submit
-                </Button>
-              ) : (
-                ""
-              )}
-
-              <div>
+              {/* <div>
                 <pre style={{ fontSize: "100%", color: "white" }}>
                   {JSON.stringify(values, null, 2)}
                 </pre>
-              </div>
+              </div> */}
             </div>
           </Form>
         )}

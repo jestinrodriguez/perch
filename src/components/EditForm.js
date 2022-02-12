@@ -9,8 +9,18 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import Button from "@mui/material/Button";
+import { purple } from "@mui/material/colors";
 import Input from "@mui/material/Input";
+import styled from "styled-components";
+
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: "purple",
+  backgroundColor: purple[500],
+  "&:hover": {
+    backgroundColor: purple[700],
+  },
+}));
 
 const EditForm = ({
   item,
@@ -65,14 +75,14 @@ const EditForm = ({
         ></Input>
       </TableCell>
       <TableCell>
-        <button
+        <Button
           onClick={(e) => {
             handleSave(e);
           }}
         >
           Save
-        </button>
-        <button onClick={(e) => handleCancel(e)}>Cancel</button>
+        </Button>
+        <Button onClick={(e) => handleCancel(e)}>Cancel</Button>
       </TableCell>
     </>
   );

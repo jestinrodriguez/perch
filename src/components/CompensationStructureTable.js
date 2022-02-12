@@ -7,9 +7,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import EditIcon from "@mui/icons-material/Edit";
 import EditForm from "./EditForm";
+import Button from "@mui/material/Button";
+
 // import { data } from "../data/structure";
-const CompensationStructureTable = ({ dataFromForm, setDataFromForm }) => {
+const CompensationStructureTable = ({
+  dataFromForm,
+  setDataFromForm,
+  setDataLoaded,
+}) => {
   const [data, setData] = useState(dataFromForm);
   const [isEditting, setIsEditting] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
@@ -43,13 +51,12 @@ const CompensationStructureTable = ({ dataFromForm, setDataFromForm }) => {
       <Table sx={{ minWidth: 500 }} aria-label='simple table'>
         <TableHead>
           <TableRow>
-            <TableCell colSpan='2'>
-              Compensation Structure
-              <DeleteIcon styles={{ padding: "120" }} />
-            </TableCell>
+            <TableCell colSpan='2'>Compensation Structure</TableCell>
             <TableCell align='center'>Actions</TableCell>
             <TableCell align='center'>
-              <button>delete</button>
+              <Button color='secondary' onClick={() => setDataLoaded(false)}>
+                Delete
+              </Button>
             </TableCell>
           </TableRow>
         </TableHead>
@@ -100,7 +107,7 @@ const CompensationStructureTable = ({ dataFromForm, setDataFromForm }) => {
                                     <TableCell>{item.from}</TableCell>
                                     <TableCell>{item.rate}</TableCell>
                                     <TableCell>
-                                      <button
+                                      <Button
                                         id={idx}
                                         key={index}
                                         value={index}
@@ -115,15 +122,16 @@ const CompensationStructureTable = ({ dataFromForm, setDataFromForm }) => {
                                           )
                                         }
                                       >
-                                        edit
-                                      </button>
-                                      <button
+                                        Edit
+                                      </Button>
+                                      <Button
                                         onClick={() =>
                                           handleDeleteTier(index, idx)
                                         }
+                                        color='secondary'
                                       >
-                                        delete
-                                      </button>
+                                        Delete
+                                      </Button>
                                     </TableCell>
                                   </>
                                 )}
@@ -135,9 +143,12 @@ const CompensationStructureTable = ({ dataFromForm, setDataFromForm }) => {
                     </Table>
                   </TableCell>
                   <TableCell align='center'>
-                    <button onClick={() => handleDeleteLevel(index)}>
-                      delete
-                    </button>
+                    <Button
+                      color='secondary'
+                      onClick={() => handleDeleteLevel(index)}
+                    >
+                      DELETE
+                    </Button>
                   </TableCell>
                 </TableRow>
               </>

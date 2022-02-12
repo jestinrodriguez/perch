@@ -8,18 +8,14 @@ import CreateModal from "./Modal/CreateModal";
 
 const Home = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [dataFromForm, setDataFromForm] = useState(null);
-
   const [showModal, setShowModal] = useState(false);
-
-  // const handleCreate = () => {
-  //   setIsCreating(true);
-  // };
 
   const useModal = () => {
     setShowModal(true);
   };
+
+  console.log(dataLoaded);
 
   return (
     <div>
@@ -33,19 +29,12 @@ const Home = () => {
           Create
         </Button>
       </Header>
-      <CreateModal setShowModal={setShowModal} showModal={showModal} />
-
-      {!isCreating ? (
-        ""
-      ) : (
-        <TestForm
-          dataFromForm={dataFromForm}
-          setDataFromForm={setDataFromForm}
-          setDataLoaded={setDataLoaded}
-          setIsCreating={setIsCreating}
-          setShowModal={setShowModal}
-        />
-      )}
+      <CreateModal
+        setShowModal={setShowModal}
+        showModal={showModal}
+        setDataFromForm={setDataFromForm}
+        setDataLoaded={setDataLoaded}
+      />
 
       {!dataLoaded ? (
         "Please load some data...."
@@ -53,6 +42,7 @@ const Home = () => {
         <CompensationStructureTable
           dataFromForm={dataFromForm}
           setDataFromForm={setDataFromForm}
+          setDataLoaded={setDataLoaded}
         />
       )}
     </div>

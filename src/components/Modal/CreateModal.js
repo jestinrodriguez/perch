@@ -4,8 +4,12 @@ import Modal from "react-modal";
 import TestForm from "../TestForm";
 import "./Modal.css";
 
-const CreateModal = ({ showModal, setShowModal }) => {
-  console.log(showModal);
+const CreateModal = ({
+  showModal,
+  setShowModal,
+  setDataFromForm,
+  setDataLoaded,
+}) => {
   const openModal = () => {
     setShowModal(true);
   };
@@ -42,7 +46,11 @@ const CreateModal = ({ showModal, setShowModal }) => {
         style={customStyles}
         ariaHideApp={false}
       >
-        <TestForm setShowModal={setShowModal} />
+        <TestForm
+          setShowModal={setShowModal}
+          setDataFromForm={setDataFromForm}
+          setDataLoaded={setDataLoaded}
+        />
         {/* <button onClick={() => setShowModal(false)}>Close Modal</button> */}
       </Modal>
     </div>
