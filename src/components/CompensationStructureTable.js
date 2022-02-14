@@ -6,39 +6,36 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditIcon from "@mui/icons-material/Edit";
 import EditForm from "./EditForm";
 import Button from "@mui/material/Button";
 
-// import { data } from "../data/structure";
 const CompensationStructureTable = ({
   dataFromForm,
   setDataFromForm,
   setDataLoaded,
 }) => {
-  const [data, setData] = useState(dataFromForm);
   const [isEditting, setIsEditting] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
   const [currLevel, setCurrLevel] = useState(0);
 
+  //set new data when data from form updates
   useEffect(() => {
     setDataFromForm(dataFromForm);
   }, [dataFromForm]);
 
+  // handles editing edit button is clicked
   const handleEditButton = (e, items, idx) => {
     setCurrLevel(Number(e.target.value));
     setEditIndex(Number(e.target.id));
     setIsEditting(true);
   };
-
+  // handles tier deletion when delete button is clicked
   const handleDeleteTier = (index, idx) => {
     let newData = { ...dataFromForm };
     newData.levels[index].tiers.splice(idx, 1);
     setDataFromForm(newData);
   };
-
+  // handles level deletion when delete button is clicked
   const handleDeleteLevel = (index) => {
     setIsEditting(false);
     let newData = { ...dataFromForm };
@@ -88,10 +85,6 @@ const CompensationStructureTable = ({
                             <>
                               <TableRow>
                                 <TableCell>{`Tier ${idx + 1}`}</TableCell>
-
-                                {/* EDIT HERE */}
-                                {/* MAKE INTO INPUT FIELD WHEN IS BEING EDITED */}
-
                                 {isEditting &&
                                 dataFromForm.levels[currLevel].tiers[
                                   editIndex

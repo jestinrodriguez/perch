@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 
 import TestForm from "../TestForm";
-import "./Modal.css";
 
 const CreateModal = ({
   showModal,
@@ -10,14 +9,6 @@ const CreateModal = ({
   setDataFromForm,
   setDataLoaded,
 }) => {
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
   const customStyles = {
     content: {
       top: "50%",
@@ -41,8 +32,6 @@ const CreateModal = ({
         isOpen={showModal}
         contentLabel='onRequestClose Example'
         onRequestClose={() => setShowModal(false)}
-        // className='Modal'
-        // overlayClassName='Overlay'
         style={customStyles}
         ariaHideApp={false}
       >
@@ -51,7 +40,6 @@ const CreateModal = ({
           setDataFromForm={setDataFromForm}
           setDataLoaded={setDataLoaded}
         />
-        {/* <button onClick={() => setShowModal(false)}>Close Modal</button> */}
       </Modal>
     </div>
   );

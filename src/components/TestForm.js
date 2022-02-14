@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
+import { Formik, Form, FieldArray } from "formik";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "./TextField";
-import * as Yup from "yup";
-const { object, string, number, date, array, ref } = require("yup");
+const { object, number, array } = require("yup");
 
 const initialValues = {
   levels: [],
 };
 
 const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
+  // check if 'from' values are valid
+  // compares "currFromValue" with "nextFromValue"
+  // nextFromValue should be greater than currFromValue
   const isValid = (data, index, idx) => {
     if (!data) return;
     let currLevel = index;
@@ -45,12 +45,14 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
     return "";
   };
 
+  // handle submit
   const handleSubmit = (values) => {
     setShowModal(false);
     setDataFromForm(values);
     setDataLoaded(true);
   };
 
+  // custom validation for yup
   const tierValidationForYup = (value, testContext) => {
     for (let i = 0; i < value.tiers.length; i++) {
       let j = i + 1;
@@ -66,7 +68,7 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
     return "";
   };
 
-  //Validation schema
+  //Yup Validation schema
   const validate = object().shape({
     levels: array().of(
       object()
@@ -105,7 +107,7 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
           <Form>
             <div
               style={{
-                width: "600px",
+                width: "660px",
                 height: "400px",
               }}
             >
@@ -114,10 +116,15 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                   {({ insert, remove, push }) => (
                     <div>
                       {values.levels.length === 0 ? (
-                        <h1>
-                          ADD LEVEL {""}
-                          <AddCircleIcon onClick={() => push({ tiers: [] })} />
-                        </h1>
+                        <div
+                          style={{ cursor: "pointer" }}
+                          onClick={() => push({ tiers: [] })}
+                        >
+                          <h1>
+                            ADD LEVEL {""}
+                            <AddCircleIcon />
+                          </h1>
+                        </div>
                       ) : (
                         ""
                       )}
@@ -135,6 +142,7 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                               >
                                 {`LEVEL ${index + 1}`}
                                 <DeleteIcon
+                                  style={{ cursor: "pointer" }}
                                   onClick={() => {
                                     remove(index);
                                   }}
@@ -142,6 +150,7 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                 {values.levels.length === index + 1 ? (
                                   <>
                                     <AddCircleIcon
+                                      style={{ cursor: "pointer" }}
                                       onClick={() =>
                                         push({
                                           tiers: [],
@@ -154,9 +163,12 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                 )}
                               </div>
 
-                              <div className='row' key={index}></div>
+                              <div className='row'></div>
 
-                              <FieldArray name={`levels[${index}].tiers`}>
+                              <FieldArray
+                                key={index}
+                                name={`levels[${index}].tiers`}
+                              >
                                 {({ insert, remove, push }) => (
                                   <div style={{ paddingBottom: "5px" }}>
                                     {values.levels[index].tiers.length > 0 &&
@@ -189,40 +201,12 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                                   name={`levels[${index}].tiers[${idx}].from`}
                                                   type='number'
                                                 />
-
-                                                {/* <label
-                                                    htmlFor={`levels[${index}].tiers[${idx}].from`}
-                                                  ></label>
-                                                  <Field
-                                                    label='From'
-                                                    name={`levels[${index}].tiers[${idx}].from`}
-                                                    placeholder='0$'
-                                                    type='number'
-                                                  />
-                                                  <ErrorMessage
-                                                    name={`levels[${index}].tiers[${idx}].from`}
-                                                  /> */}
-
                                                 <TextField
                                                   label='Rate'
                                                   name={`levels[${index}].tiers[${idx}].rate`}
                                                   type='number'
                                                 />
-                                                {/* <label
-                                                    htmlFor={`levels[${index}].tiers[${idx}].rate`}
-                                                  ></label>
-                                                  <Field
-                                                    label='Rate'
-                                                    name={`levels[${index}].tiers[${idx}].rate`}
-                                                    placeholder='15%'
-                                                    type='number'
-                                                  />
-                                                  <ErrorMessage
-                                                    color='red'
-                                                    name={`levels[${index}].tiers[${idx}].rate`}
-                                                  /> */}
-
-                                                <div className='col'>
+                                                <div>
                                                   <DeleteIcon
                                                     style={{
                                                       cursor: "pointer",
@@ -277,17 +261,17 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                           paddingTop: "5px",
                                           display: "flex",
                                           alignItems: "center",
+                                          cursor: "pointer",
                                         }}
+                                        onClick={() =>
+                                          push({
+                                            from: "",
+                                            rate: "",
+                                          })
+                                        }
                                       >
                                         ADD TIER
-                                        <AddCircleIcon
-                                          onClick={() =>
-                                            push({
-                                              from: "",
-                                              rate: "",
-                                            })
-                                          }
-                                        />
+                                        <AddCircleIcon />
                                       </div>
                                     )}
                                   </div>
@@ -320,6 +304,12 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                   ""
                 )}
               </div>
+              {/* {SHOW TABLE STRUCTURE IN UI} */}
+              {/* <div>
+                <pre style={{ fontSize: "100%", color: "white" }}>
+                  {JSON.stringify(values, null, 2)}
+                </pre>
+              </div> */}
             </div>
           </Form>
         )}

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
-import TestForm from "./TestForm";
 import CompensationStructureTable from "./CompensationStructureTable";
-import { data } from "../data/structure";
 import Header from "./Header";
 import CreateModal from "./Modal/CreateModal";
 
@@ -32,7 +30,6 @@ const Home = () => {
         setDataFromForm={setDataFromForm}
         setDataLoaded={setDataLoaded}
       />
-
       {!dataLoaded ? (
         "Please load some data...."
       ) : (

@@ -16,22 +16,23 @@ const EditForm = ({
   idx,
 }) => {
   const [editFormData, setEditFormData] = useState(dataFromForm);
-
   const [deepDataCopy, setDeepDataCopy] = useState(
     JSON.parse(JSON.stringify(dataFromForm))
   );
 
+  // handle saving when editing
   const handleSave = (e) => {
     e.preventDefault();
     setDataFromForm(editFormData);
     setIsEditting(false);
   };
-
+  // handle cancel when editing
   const handleCancel = (e) => {
     e.preventDefault();
     setIsEditting(false);
   };
 
+  // handles on change when input is being changed
   const handleOnChange = (e) => {
     e.preventDefault();
     let newData = { ...deepDataCopy };
