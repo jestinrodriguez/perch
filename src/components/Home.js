@@ -15,16 +15,13 @@ const Home = () => {
     setShowModal(true);
   };
 
-  console.log(dataLoaded);
-
   return (
     <div>
       <Header>
         <Button
-          style={{ backgroundColor: "#3987f7" }}
           variant='contained'
-          color='success'
           onClick={useModal}
+          style={{ backgroundColor: "#448ffb" }}
         >
           Create
         </Button>

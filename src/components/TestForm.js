@@ -1,79 +1,99 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
-
-import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CloseIcon from "@mui/icons-material/Close";
-import TextField from "@mui/material/TextField";
-
+import { TextField } from "./TextField";
 import * as Yup from "yup";
-const { object, string, number, date, array } = require("yup");
+const { object, string, number, date, array, ref } = require("yup");
 
 const initialValues = {
   levels: [],
 };
 
-const CssField = styled(Field)({
-  "& label.Mui-focused": {
-    color: "#448ffb",
-  },
-  "& .MuiInput-underline:after": {
-    borderBottomColor: "#448ffb",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "#448ffb",
-    },
-    "&:hover fieldset": {
-      borderColor: "white",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#448ffb",
-    },
-  },
-});
-
 const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
-  const handleSubmit = (values) => {
-    // await new Promise((r) => {
-    //   setTimeout(r, 100);
-    // });
+  const isValid = (data, index, idx) => {
+    if (!data) return;
+    let currLevel = index;
+    let currFromValue = idx;
+    let nextFromValue = currFromValue + 1;
 
+    if (nextFromValue === data.levels[currLevel].tiers.length) {
+      return;
+    }
+
+    if (
+      (data.levels[currLevel].tiers[currFromValue].from ||
+        data.levels[currLevel].tiers[nextFromValue].from) === ""
+    ) {
+      return "";
+    } else if (
+      data.levels[currLevel].tiers[currFromValue].from >=
+      data.levels[currLevel].tiers[nextFromValue].from
+    ) {
+      return (
+        <div style={{ color: "red" }}>
+          {`
+      TIER ${nextFromValue + 1}: Value should be greater than tier ${
+            currFromValue + 1
+          } value `}
+        </div>
+      );
+    }
+    return "";
+  };
+
+  const handleSubmit = (values) => {
     setShowModal(false);
     setDataFromForm(values);
     setDataLoaded(true);
   };
 
+  const tierValidationForYup = (value, testContext) => {
+    for (let i = 0; i < value.tiers.length; i++) {
+      let j = i + 1;
+      if (j === value.tiers.length) {
+        continue;
+      }
+      if (value.tiers[i].from >= value.tiers[j].from) {
+        return `TIER ${j + 1}: Value should be greater than tier ${
+          i + 1
+        } value`;
+      }
+    }
+    return "";
+  };
+
+  //Validation schema
   const validate = object().shape({
     levels: array().of(
-      object().shape({
-        tiers: array().of(
-          object().shape({
-            from: number()
-              .required("Required")
-              .positive("Must be a positive number"),
-            rate: number()
-              .required("Required")
-              .min(1, "Please Enter a number between 1-100")
-              .max(100, "Please Enter a number between 1-100"),
-          })
-        ),
-      })
+      object()
+        .shape({
+          tiers: array().of(
+            object().shape({
+              from: number()
+                .required("Required")
+                .min(0, "Must be zero or greater than 0"),
+              rate: number()
+                .required("Required")
+                .min(1, "Please Enter a number between 1-100")
+                .max(100, "Please Enter a number between 1-100")
+                .integer("Must be an integer"),
+            })
+          ),
+        })
+        .test("compare", "error", function (value, testContext) {
+          const message = tierValidationForYup(value, testContext);
+          return !message;
+        })
     ),
   });
 
-  // let schema = Yup.object().shape({
-  //   nested: Yup.object().shape({
-  //     arr: Yup.array().of(Yup.object().shape({ num: number().max(4) })),
-  //   }),
-  // });
-
   return (
     <div className='container mt-3'>
-      <h1 style={{ color: "white", fontFamily: "Arial", padding: "20px" }}>
+      <h1 style={{ color: "white", padding: "20px" }}>
         CREATE A COMPENSATION STRUCTURE
       </h1>
       <Formik
@@ -85,45 +105,30 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
           <Form>
             <div
               style={{
-                width: "630px",
-                height: "500px",
+                width: "600px",
+                height: "400px",
               }}
             >
               <div style={{ paddingLeft: "40px" }}>
                 <FieldArray name='levels'>
                   {({ insert, remove, push }) => (
-                    <div style={{ alignItems: "center" }}>
+                    <div>
                       {values.levels.length === 0 ? (
-                        <h1 style={{ color: "#448ffb", fontFamily: "Arial" }}>
+                        <h1>
                           ADD LEVEL {""}
                           <AddCircleIcon onClick={() => push({ tiers: [] })} />
                         </h1>
                       ) : (
                         ""
                       )}
-
-                      {/* <Button
-                        type='button'
-                        variant='contained'
-                        className='secondary'
-                        onClick={() => push({ tiers: [] })}
-                      >
-                        Add Levels
-                      </Button> */}
-
-                      <div
-                        style={{
-                          flexDirection: "column",
-                        }}
-                      >
+                      <div>
                         {values.levels.length > 0 &&
                           values.levels.map((lvl, index) => (
                             <div key={index}>
-                              {console.log(lvl)}
                               <div
                                 style={{
                                   color: "#448ffb",
-                                  fontFamily: "Arial",
+
                                   display: "flex",
                                   alignItems: "center",
                                 }}
@@ -134,7 +139,6 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                     remove(index);
                                   }}
                                 />
-
                                 {values.levels.length === index + 1 ? (
                                   <>
                                     <AddCircleIcon
@@ -158,88 +162,108 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                     {values.levels[index].tiers.length > 0 &&
                                       values.levels[index].tiers.map(
                                         (tier, idx) => (
-                                          <div key={idx}>
+                                          <>
                                             <div
-                                              style={{
-                                                color: "white",
-                                                paddingTop: "5px",
-                                                paddingLeft: "20px",
-                                                fontFamily: "Arial",
-                                              }}
-                                            >{`TIER ${idx + 1}`}</div>
-                                            <div
-                                              className='row'
                                               key={idx}
-                                              style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                paddingLeft: "20px",
-                                                justifyContent: "space-between",
-                                              }}
+                                              style={{ paddingBottom: "5px" }}
                                             >
-                                              <div className='col'>
-                                                <label
-                                                  htmlFor={`levels[${index}].tiers[${idx}].from`}
-                                                ></label>
-                                                <Field
+                                              <div
+                                                style={{
+                                                  color: "white",
+                                                  paddingTop: "5px",
+                                                  paddingLeft: "20px",
+                                                }}
+                                              >{`TIER ${idx + 1}`}</div>
+                                              <div
+                                                key={idx}
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  paddingLeft: "20px",
+                                                  justifyContent:
+                                                    "space-between",
+                                                }}
+                                              >
+                                                <TextField
                                                   label='From'
                                                   name={`levels[${index}].tiers[${idx}].from`}
-                                                  placeholder='0$'
                                                   type='number'
                                                 />
-                                                <ErrorMessage
-                                                  name={`levels[${index}].tiers[${idx}].from`}
-                                                />
-                                              </div>
-                                              <div className='col'>
-                                                <label
-                                                  htmlFor={`levels[${index}].tiers[${idx}].rate`}
-                                                ></label>
-                                                <Field
+
+                                                {/* <label
+                                                    htmlFor={`levels[${index}].tiers[${idx}].from`}
+                                                  ></label>
+                                                  <Field
+                                                    label='From'
+                                                    name={`levels[${index}].tiers[${idx}].from`}
+                                                    placeholder='0$'
+                                                    type='number'
+                                                  />
+                                                  <ErrorMessage
+                                                    name={`levels[${index}].tiers[${idx}].from`}
+                                                  /> */}
+
+                                                <TextField
                                                   label='Rate'
                                                   name={`levels[${index}].tiers[${idx}].rate`}
-                                                  placeholder='15%'
                                                   type='number'
                                                 />
-                                                <ErrorMessage
-                                                  color='red'
-                                                  name={`levels[${index}].tiers[${idx}].rate`}
-                                                />
-                                              </div>
+                                                {/* <label
+                                                    htmlFor={`levels[${index}].tiers[${idx}].rate`}
+                                                  ></label>
+                                                  <Field
+                                                    label='Rate'
+                                                    name={`levels[${index}].tiers[${idx}].rate`}
+                                                    placeholder='15%'
+                                                    type='number'
+                                                  />
+                                                  <ErrorMessage
+                                                    color='red'
+                                                    name={`levels[${index}].tiers[${idx}].rate`}
+                                                  /> */}
 
-                                              <div className='col'>
-                                                <DeleteIcon
-                                                  style={{
-                                                    cursor: "pointer",
-                                                    color: "white",
-                                                  }}
-                                                  onClick={() => {
-                                                    remove(idx);
-                                                  }}
-                                                />
-                                                {values.levels[index].tiers
-                                                  .length ===
-                                                idx + 1 ? (
-                                                  <>
-                                                    <AddCircleIcon
-                                                      style={{
-                                                        cursor: "pointer",
-                                                        color: "white",
-                                                      }}
-                                                      onClick={() =>
-                                                        push({
-                                                          from: "",
-                                                          rate: "",
-                                                        })
-                                                      }
-                                                    />
-                                                  </>
-                                                ) : (
-                                                  ""
-                                                )}
+                                                <div className='col'>
+                                                  <DeleteIcon
+                                                    style={{
+                                                      cursor: "pointer",
+                                                      color: "white",
+                                                    }}
+                                                    onClick={() => {
+                                                      remove(idx);
+                                                    }}
+                                                  />
+                                                  {values.levels[index].tiers
+                                                    .length ===
+                                                  idx + 1 ? (
+                                                    <>
+                                                      <AddCircleIcon
+                                                        style={{
+                                                          cursor: "pointer",
+                                                          color: "white",
+                                                        }}
+                                                        onClick={() =>
+                                                          push({
+                                                            from: "",
+                                                            rate: "",
+                                                          })
+                                                        }
+                                                      />
+                                                    </>
+                                                  ) : (
+                                                    ""
+                                                  )}
+                                                </div>
+                                              </div>
+                                              <div
+                                                style={{
+                                                  paddingLeft: "20px",
+                                                  paddingTop: "5px",
+                                                }}
+                                              >
+                                                {isValid(values, index, idx)}
                                               </div>
                                             </div>
-                                          </div>
+                                          </>
                                         )
                                       )}
 
@@ -253,7 +277,6 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                                           paddingTop: "5px",
                                           display: "flex",
                                           alignItems: "center",
-                                          fontFamily: "Arial",
                                         }}
                                       >
                                         ADD TIER
@@ -286,19 +309,17 @@ const TestForm = ({ setShowModal, setDataFromForm, setDataLoaded }) => {
                 }}
               >
                 {values.levels.length > 0 ? (
-                  <Button color='primary' variant='contained' type='submit'>
+                  <Button
+                    variant='contained'
+                    type='submit'
+                    style={{ backgroundColor: "#448ffb", color: "white" }}
+                  >
                     Submit
                   </Button>
                 ) : (
                   ""
                 )}
               </div>
-
-              {/* <div>
-                <pre style={{ fontSize: "100%", color: "white" }}>
-                  {JSON.stringify(values, null, 2)}
-                </pre>
-              </div> */}
             </div>
           </Form>
         )}

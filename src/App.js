@@ -1,5 +1,6 @@
 import React from "react";
 import Home from "./components/Home";
+import "./App.css";
 import { data } from "./data/structure";
 
 const App = () => {
@@ -10,7 +11,7 @@ const App = () => {
   // console.log(data);
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div>
       <Home />
     </div>
   );

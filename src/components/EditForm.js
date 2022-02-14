@@ -1,26 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
-import { purple } from "@mui/material/colors";
-import Input from "@mui/material/Input";
-import styled from "styled-components";
 
-const ColorButton = styled(Button)(({ theme }) => ({
-  color: "purple",
-  backgroundColor: purple[500],
-  "&:hover": {
-    backgroundColor: purple[700],
-  },
-}));
+import Button from "@mui/material/Button";
+
+import Input from "@mui/material/Input";
 
 const EditForm = ({
   item,
@@ -74,15 +59,23 @@ const EditForm = ({
           name='rate'
         ></Input>
       </TableCell>
-      <TableCell>
+      <TableCell align='center'>
         <Button
+          variant='contained'
+          style={{ backgroundColor: "rgb(206, 147, 216)" }}
           onClick={(e) => {
             handleSave(e);
           }}
         >
           Save
         </Button>
-        <Button onClick={(e) => handleCancel(e)}>Cancel</Button>
+        <Button
+          variant='contained'
+          onClick={(e) => handleCancel(e)}
+          style={{ backgroundColor: "#00c1ff", color: "white" }}
+        >
+          Cancel
+        </Button>
       </TableCell>
     </>
   );

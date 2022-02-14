@@ -25,7 +25,7 @@ const CreateModal = ({
       right: "auto",
       bottom: "auto",
       transform: "translate(-50%,-50%)",
-      backgroundColor: "#222529",
+      backgroundColor: "rgba(10,11,13,0.75)",
       padding: 0,
       border: "none",
     },

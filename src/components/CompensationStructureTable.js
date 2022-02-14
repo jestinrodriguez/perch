@@ -54,7 +54,11 @@ const CompensationStructureTable = ({
             <TableCell colSpan='2'>Compensation Structure</TableCell>
             <TableCell align='center'>Actions</TableCell>
             <TableCell align='center'>
-              <Button color='secondary' onClick={() => setDataLoaded(false)}>
+              <Button
+                color='secondary'
+                variant='contained'
+                onClick={() => setDataLoaded(false)}
+              >
                 Delete
               </Button>
             </TableCell>
@@ -72,8 +76,8 @@ const CompensationStructureTable = ({
                         <TableHead>
                           <TableCell>Tier</TableCell>
                           <TableCell>From</TableCell>
-                          <TableCell>Rule</TableCell>
-                          <TableCell>Actions</TableCell>
+                          <TableCell>Rate</TableCell>
+                          <TableCell align='center'>Actions</TableCell>
                         </TableHead>
                       ) : (
                         ""
@@ -106,11 +110,12 @@ const CompensationStructureTable = ({
                                   <>
                                     <TableCell>{item.from}</TableCell>
                                     <TableCell>{item.rate}</TableCell>
-                                    <TableCell>
+                                    <TableCell align='center'>
                                       <Button
                                         id={idx}
                                         key={index}
                                         value={index}
+                                        variant='contained'
                                         onClick={(e) =>
                                           handleEditButton(
                                             e,
@@ -129,6 +134,7 @@ const CompensationStructureTable = ({
                                           handleDeleteTier(index, idx)
                                         }
                                         color='secondary'
+                                        variant='contained'
                                       >
                                         Delete
                                       </Button>
@@ -145,6 +151,7 @@ const CompensationStructureTable = ({
                   <TableCell align='center'>
                     <Button
                       color='secondary'
+                      variant='contained'
                       onClick={() => handleDeleteLevel(index)}
                     >
                       DELETE
